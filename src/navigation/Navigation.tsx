@@ -9,6 +9,32 @@ import AlarmScreen from '../screens/AlarmScreen';
 import StopwatchScreen from '../screens/StopwatchScreen';
 import TimerScreen from '../screens/TimerScreen';
 
+// icon selection function
+const getTabBarIcon = (routeName: string, focused: boolean, color: string) => {
+  let iconName;
+  let IconComponent = Icon;
+
+  switch (routeName) {
+    case 'World Clock':
+      iconName = 'earth';
+      IconComponent = Icon2;
+      break;
+    case 'Alarm':
+      iconName = 'alarm';
+      break;
+    case 'Stopwatch':
+      iconName = 'timer';
+      break;
+    case 'Timer':
+      iconName = 'speedometer';
+      break;
+    default:
+      iconName = 'timer';
+  }
+
+  return <IconComponent name={iconName} size={28} color={color} />;
+};
+
 const Navigation = () => {
   const Tab = createBottomTabNavigator();
 
@@ -17,23 +43,8 @@ const Navigation = () => {
       <Tab.Navigator
         initialRouteName="Stopwatch"
         screenOptions={({route}) => ({
-          tabBarIcon: ({focused, color}) => {
-            let iconName;
-            let IconComponent = Icon;
-
-            if (route.name === 'World Clock') {
-              iconName = 'earth';
-              IconComponent = Icon2;
-            } else if (route.name === 'Alarm') {
-              iconName = 'alarm';
-            } else if (route.name === 'Stopwatch') {
-              iconName = 'timer';
-            } else if (route.name === 'Timer') {
-              iconName = 'speedometer';
-            }
-
-            return <IconComponent name={iconName} size={28} color={color} />;
-          },
+          tabBarIcon: ({focused, color}) =>
+            getTabBarIcon(route.name, focused, color),
           tabBarActiveTintColor: '#FBA10D',
           tabBarInactiveTintColor: 'gray',
           tabBarLabelStyle: {fontSize: 12},
