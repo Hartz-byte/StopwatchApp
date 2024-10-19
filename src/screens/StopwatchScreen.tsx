@@ -8,16 +8,23 @@ import {
   Dimensions,
 } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {formatTime} from '../utils/formatTime';
 
 const {width, height} = Dimensions.get('window');
 
-// interface
+// TimerState interface
 interface TimerState {
   time: number;
   isRunning: boolean;
   laps: {time: number; diff: number | null}[];
+}
+
+// Lap interface
+interface Lap {
+  time: number;
+  diff: number | null;
 }
 
 const Stopwatch = () => {
@@ -29,16 +36,61 @@ const Stopwatch = () => {
   const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
   const [lastLapTime, setLastLapTime] = useState<number | null>(null);
 
+  // save timer state to AsyncStorage
+  const saveTimerState = async () => {
+    try {
+      const timerState = {time, isRunning, laps};
+      await AsyncStorage.setItem('timerState', JSON.stringify(timerState));
+    } catch (e) {
+      console.error('Failed to save the timer state.', e);
+    }
+  };
+
+  // useEffect to load timer state from AsyncStorage
+  useEffect(() => {
+    const loadTimerState = async () => {
+      try {
+        const savedState = await AsyncStorage.getItem('timerState');
+
+        if (savedState) {
+          const {
+            time: savedTime,
+            isRunning: savedIsRunning,
+            laps: savedLaps,
+          } = JSON.parse(savedState);
+          dispatch({type: 'UPDATE_TIME', payload: savedTime});
+          if (savedIsRunning) {
+            dispatch({type: 'STOP_TIMER'});
+          }
+
+          savedLaps.forEach((lap: Lap) =>
+            dispatch({type: 'ADD_LAP', payload: lap}),
+          );
+        }
+      } catch (e) {
+        console.error('Failed to load the timer state.', e);
+      }
+    };
+
+    loadTimerState();
+  }, [dispatch]);
+
   // useEffect to update the timer
   useEffect(() => {
+    let startTime = Date.now() - time;
+
     if (isRunning) {
       const id = setInterval(() => {
-        dispatch({type: 'UPDATE_TIME', payload: time + 10});
+        const currentTime = Date.now();
+        const elapsedTime = currentTime - startTime;
+        dispatch({type: 'UPDATE_TIME', payload: elapsedTime});
       }, 10);
+
       setIntervalId(id);
     } else if (!isRunning && intervalId) {
       clearInterval(intervalId);
     }
+
     return () => {
       if (intervalId) {
         clearInterval(intervalId);
@@ -46,10 +98,27 @@ const Stopwatch = () => {
     };
   }, [isRunning, dispatch, time]);
 
-  // dispatch functions
+  // handle start functions
   const handleStart = () => dispatch({type: 'START_TIMER'});
-  const handleStop = () => dispatch({type: 'STOP_TIMER'});
-  const handleReset = () => dispatch({type: 'RESET_TIMER'});
+
+  // handle stop functions
+  const handleStop = () => {
+    // save the timer state to AsyncStorage
+    saveTimerState();
+
+    dispatch({type: 'STOP_TIMER'});
+  };
+
+  // handle reset functions
+  const handleReset = async () => {
+    // remove the timer state to AsyncStorage
+    await AsyncStorage.removeItem('timerState');
+
+    dispatch({type: 'RESET_TIMER'});
+    setLastLapTime(null);
+  };
+
+  // handle lap functions
   const handleLap = () => {
     const newLap = {
       time: time,
@@ -137,6 +206,8 @@ const Stopwatch = () => {
     </View>
   );
 };
+
+export default Stopwatch;
 
 const styles = StyleSheet.create({
   container: {
@@ -254,5 +325,3 @@ const styles = StyleSheet.create({
     fontFamily: 'Inter-Medium',
   },
 });
-
-export default Stopwatch;

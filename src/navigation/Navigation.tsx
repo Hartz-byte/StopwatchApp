@@ -32,7 +32,7 @@ const Navigation = () => {
               iconName = 'speedometer';
             }
 
-            return <IconComponent name={iconName} size={24} color={color} />;
+            return <IconComponent name={iconName} size={28} color={color} />;
           },
           tabBarActiveTintColor: '#FBA10D',
           tabBarInactiveTintColor: 'gray',
