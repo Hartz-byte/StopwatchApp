@@ -32,8 +32,7 @@ A simple stopwatch app built using React Native CLI for both Android and iOS, in
    npm install
 
 3. **Run the app**:
-   For Android:
    ```bash
-   npx react-native run-android
+   npx react-native start
 
    
