@@ -1,5 +1,5 @@
 const initialState = {
-  time: 0, // time in milliseconds
+  time: 0,
   isRunning: false,
   laps: [],
 };

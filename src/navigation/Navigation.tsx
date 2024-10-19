@@ -2,6 +2,7 @@ import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import Icon2 from 'react-native-vector-icons/AntDesign';
 
 import WorldClockScreen from '../screens/WorldClockScreen';
 import AlarmScreen from '../screens/AlarmScreen';
@@ -16,11 +17,13 @@ const Navigation = () => {
       <Tab.Navigator
         initialRouteName="Stopwatch"
         screenOptions={({route}) => ({
-          tabBarIcon: ({focused, color, size}) => {
+          tabBarIcon: ({focused, color}) => {
             let iconName;
+            let IconComponent = Icon;
 
             if (route.name === 'World Clock') {
               iconName = 'earth';
+              IconComponent = Icon2;
             } else if (route.name === 'Alarm') {
               iconName = 'alarm';
             } else if (route.name === 'Stopwatch') {
@@ -29,7 +32,7 @@ const Navigation = () => {
               iconName = 'speedometer';
             }
 
-            return <Icon name={iconName} size={size} color={color} />;
+            return <IconComponent name={iconName} size={24} color={color} />;
           },
           tabBarActiveTintColor: '#FBA10D',
           tabBarInactiveTintColor: 'gray',
