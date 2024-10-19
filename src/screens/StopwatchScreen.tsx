@@ -221,7 +221,7 @@ const styles = StyleSheet.create({
   timeText: {
     fontSize: width < 380 ? 50 : 70,
     color: 'white',
-    fontFamily: 'Inter-Regular',
+    fontFamily: 'Inter Medium',
   },
   buttonContainer: {
     marginTop: height * 0.1,
@@ -288,14 +288,17 @@ const styles = StyleSheet.create({
   buttonText: {
     color: '#fff',
     fontSize: width < 380 ? 16 : 20,
+    fontFamily: 'Inter Regular',
   },
   stopText: {
     color: 'red',
     fontSize: width < 380 ? 16 : 20,
+    fontFamily: 'Inter Regular',
   },
   startText: {
     color: '#217E36',
     fontSize: width < 380 ? 16 : 20,
+    fontFamily: 'Inter Regular',
   },
   lapList: {
     marginTop: 40,
@@ -304,7 +307,12 @@ const styles = StyleSheet.create({
   },
   lapText: {
     fontSize: 16,
-    fontFamily: 'Inter-Medium',
+    fontFamily: 'Inter Regular',
+  },
+  lapTimeText: {
+    fontSize: 16,
+    fontFamily: 'Inter Regular',
+    color: '#fff',
   },
   lapContainer: {
     width: '100%',
@@ -314,14 +322,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#444',
     marginVertical: 10,
   },
-  lapTimeText: {
-    fontSize: 16,
-    fontFamily: 'Inter-Medium',
-    color: '#fff',
-  },
   lapDiffText: {
     fontSize: 14,
     color: 'green',
-    fontFamily: 'Inter-Medium',
+    fontFamily: 'Inter Regular',
   },
 });
