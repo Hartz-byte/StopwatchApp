@@ -13,6 +13,7 @@ import {formatTime} from '../utils/formatTime';
 
 const {width, height} = Dimensions.get('window');
 
+// interface
 interface TimerState {
   time: number;
   isRunning: boolean;
@@ -24,9 +25,11 @@ const Stopwatch = () => {
   const {time, isRunning, laps} = useSelector(
     (state: {timer: TimerState}) => state.timer,
   );
+
   const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
   const [lastLapTime, setLastLapTime] = useState<number | null>(null);
 
+  // useEffect to update the timer
   useEffect(() => {
     if (isRunning) {
       const id = setInterval(() => {
@@ -43,6 +46,7 @@ const Stopwatch = () => {
     };
   }, [isRunning, dispatch, time]);
 
+  // dispatch functions
   const handleStart = () => dispatch({type: 'START_TIMER'});
   const handleStop = () => dispatch({type: 'STOP_TIMER'});
   const handleReset = () => dispatch({type: 'RESET_TIMER'});
@@ -58,6 +62,8 @@ const Stopwatch = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.timeText}>{formatTime(time)}</Text>
+
+      {/* conditional buttons */}
       <View style={styles.buttonContainer}>
         {isRunning ? (
           <View style={styles.flexStyle}>
@@ -68,7 +74,7 @@ const Stopwatch = () => {
             </TouchableOpacity>
             <TouchableOpacity onPress={handleStop} style={styles.stopButton}>
               <View style={styles.innerStopButton}>
-                <Text style={styles.buttonText}>Stop</Text>
+                <Text style={styles.stopText}>Stop</Text>
               </View>
             </TouchableOpacity>
           </View>
@@ -81,35 +87,52 @@ const Stopwatch = () => {
             </TouchableOpacity>
             <TouchableOpacity onPress={handleStart} style={styles.startButton}>
               <View style={styles.innerStartButton}>
-                <Text style={styles.buttonText}>Start</Text>
+                <Text style={styles.startText}>Start</Text>
               </View>
             </TouchableOpacity>
           </View>
         )}
       </View>
 
+      {/* laps data view */}
       <ScrollView style={styles.lapList}>
         {laps
           .slice()
           .reverse()
-          .map((lap, index) => (
-            <View key={index} style={styles.lapContainer}>
-              {/* divider */}
-              <View style={styles.divider} />
+          .map((lap, index) => {
+            // color determination for laps
+            let lapColor = 'red';
+            if (index === 0) {
+              lapColor = 'white';
+            } else if (index === 1) {
+              lapColor = '#217E36';
+            }
 
-              {/* lap text */}
-              <View style={styles.flexStyle}>
-                <Text style={styles.lapText}>Lap {laps.length - index}</Text>
+            return (
+              <View key={index} style={styles.lapContainer}>
+                {/* divider */}
+                <View style={styles.divider} />
 
-                {/* conditional rendering of lap time */}
-                {lap.diff === null ? (
-                  <Text style={styles.lapTimeText}>{formatTime(lap.time)}</Text>
-                ) : (
-                  <Text style={styles.lapTimeText}>{formatTime(lap.diff)}</Text>
-                )}
+                {/* lap text */}
+                <View style={styles.flexStyle}>
+                  <Text style={[styles.lapText, {color: lapColor}]}>
+                    Lap {laps.length - index}
+                  </Text>
+
+                  {/* conditional rendering of lap time */}
+                  {lap.diff === null ? (
+                    <Text style={[styles.lapTimeText, {color: lapColor}]}>
+                      {formatTime(lap.time)}
+                    </Text>
+                  ) : (
+                    <Text style={[styles.lapTimeText, {color: lapColor}]}>
+                      {formatTime(lap.diff)}
+                    </Text>
+                  )}
+                </View>
               </View>
-            </View>
-          ))}
+            );
+          })}
       </ScrollView>
     </View>
   );
@@ -193,7 +216,15 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: '#fff',
-    fontSize: width < 380 ? 14 : 18,
+    fontSize: width < 380 ? 16 : 20,
+  },
+  stopText: {
+    color: 'red',
+    fontSize: width < 380 ? 16 : 20,
+  },
+  startText: {
+    color: '#217E36',
+    fontSize: width < 380 ? 16 : 20,
   },
   lapList: {
     marginTop: 40,
