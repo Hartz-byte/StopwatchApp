@@ -219,9 +219,11 @@ const styles = StyleSheet.create({
     paddingTop: height * 0.18,
   },
   timeText: {
-    fontSize: width < 380 ? 50 : 70,
+    fontSize: width < 380 ? 60 : 70,
     color: 'white',
     fontFamily: 'Inter Medium',
+    width: '100%',
+    textAlign: 'center',
   },
   buttonContainer: {
     marginTop: height * 0.1,
